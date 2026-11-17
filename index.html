@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday! 🎂</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 35px 20px 70px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(199,125,255,.17), transparent 30%),
+        radial-gradient(circle at 80% 80%, rgba(255,117,140,.16), transparent 30%),
+        radial-gradient(circle at center, #1b1035 0%, #090514 100%);
+      background-attachment: fixed;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .card {
+      width: min(92vw, 560px);
+      position: relative;
+      z-index: 2;
+      padding: 32px 42px;
+      border-radius: 26px;
+      background: rgba(255,255,255,.07);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.15);
+      box-shadow:
+        0 25px 70px rgba(0,0,0,.5),
+        inset 0 1px 0 rgba(255,255,255,.08);
+      animation: cardEntrance .9s cubic-bezier(.175,.885,.32,1.275);
+    }
+
+    @keyframes cardEntrance {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(.92);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .cake {
+      font-size: 3.8rem;
+      animation: bounce 2s infinite ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-9px); }
+    }
+
+    h1 {
+      font-size: clamp(2rem, 7vw, 3.2rem);
+      margin-top: 4px;
+      background: linear-gradient(
+        90deg,
+        #ff7eb3,
+        #ff758c,
+        #ffd166,
+        #06d6a0,
+        #c77dff
+      );
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 4s infinite alternate;
+    }
+
+    @keyframes gradientShift {
+      from { background-position: 0% 50%; }
+      to { background-position: 100% 50%; }
+    }
+
+    .name {
+      font-size: clamp(2.5rem, 8vw, 3.8rem);
+      font-weight: 800;
+      color: #ffd166;
+      text-shadow:
+        0 0 15px rgba(255,209,102,.7),
+        0 0 30px rgba(255,117,140,.45);
+      margin: 2px 0 15px;
+      animation: pulseGlow 2s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      from { transform: scale(1); }
+      to { transform: scale(1.035); }
+    }
+
+    .typedMessage {
+      color: #e7dfff;
+      line-height: 1.55;
+      min-height: 70px;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    .cursor::after {
+      content: "|";
+      color: #ffd166;
+      animation: cursorBlink .7s infinite;
+    }
+
+    @keyframes cursorBlink {
+      50% { opacity: 0; }
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 50px;
+      font-size: .95rem;
+      font-weight: 650;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .primaryBtn {
+      color: #130b20;
+      background: linear-gradient(135deg, #ffd166, #ff758c);
+      box-shadow: 0 8px 25px rgba(255,117,140,.35);
+      transition: transform .2s;
+    }
+
+    .primaryBtn:hover {
+      transform: translateY(-3px) scale(1.04);
+    }
+
+    #wishSection {
+      margin-top: 12px;
+      animation: fadeUp .8s ease forwards;
+    }
+
+    .wishTitle {
+      font-size: 1.25rem;
+      color: #ffd166;
+      margin-bottom: 12px;
+    }
+
+    .birthdayCake {
+      position: relative;
+      font-size: 4.5rem;
+      display: inline-block;
+      margin: 12px 0;
+    }
+
+    .flames {
+      position: absolute;
+      width: 100%;
+      top: -24px;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .flame {
+      font-size: 1.25rem;
+      animation: flicker .25s infinite alternate;
+    }
+
+    @keyframes flicker {
+      from { transform: scale(.85) rotate(-4deg); }
+      to { transform: scale(1.15) rotate(4deg); }
+    }
+
+    .flame.out {
+      animation: flameOut .5s forwards;
+    }
+
+    @keyframes flameOut {
+      to {
+        opacity: 0;
+        transform: translateY(-15px) scale(0);
+      }
+    }
+
+    #wishResult {
+      margin-top: 12px;
+      color: #06d6a0;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .teamsPopup {
+      margin-top: 22px;
+      text-align: left;
+      padding: 18px;
+      border-radius: 15px;
+      background: rgba(65,64,129,.9);
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 15px 40px rgba(0,0,0,.35);
+      animation: fadeUp .6s ease;
+      scroll-margin: 30px;
+    }
+
+    .teamsHeader {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .teamsLogo {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      border-radius: 8px;
+      background: #6264a7;
+      font-weight: 800;
+    }
+
+    .priority {
+      font-size: .78rem;
+      color: #ffb3bc;
+      margin-bottom: 6px;
+    }
+
+    .requestTitle {
+      font-size: 1.13rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .teamsText {
+      font-size: .9rem;
+      color: #dddaf4;
+      line-height: 1.5;
+    }
+
+    /*
+      Decline is contained entirely inside this area.
+      overflow:hidden guarantees it can never visually
+      escape the playground.
+    */
+    .teamsButtons {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      margin-top: 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      overflow: hidden;
+    }
+
+    .acceptBtn {
+      position: absolute;
+      left: 15px;
+      bottom: 20px;
+      z-index: 5;
+      background: #8b89e6;
+      color: white;
+      white-space: nowrap;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .acceptBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,.25);
+    }
+
+    .declineBtn {
+      /*
+        IMPORTANT:
+        Always absolute relative to teamsButtons.
+        No fixed positioning.
+        No right property.
+      */
+      position: absolute;
+      left: 295px;
+      top: 115px;
+      z-index: 10;
+
+      background: #efefef;
+      color: #333;
+      white-space: nowrap;
+
+      /*
+        opacity/visibility are explicitly fixed.
+        The button therefore cannot become hidden.
+      */
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block;
+
+      transition:
+        left .16s ease,
+        top .16s ease,
+        background .2s,
+        color .2s;
+    }
+
+    .declineBtn.danger {
+      background: #ff5d73;
+      color: white;
+    }
+
+    .declineBtn.final {
+      background: #ffd166;
+      color: #171020;
+    }
+
+    .finalMessage {
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,.13);
+      animation: fadeUp .9s ease;
+      scroll-margin: 30px;
+    }
+
+    .finalMessage h2 {
+      color: #ffd166;
+      margin-bottom: 10px;
+    }
+
+    .finalMessage p {
+      color: #e7dfff;
+      line-height: 1.6;
+    }
+
+    .partyConfirmed {
+      color: #06d6a0;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .signature {
+      color: #ff98bc;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-top: 13px;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .balloon {
+      position: fixed;
+      bottom: -100px;
+      font-size: 2.5rem;
+      animation: floatUp linear forwards;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    @keyframes floatUp {
+      to {
+        transform: translateY(-120vh) rotate(18deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 12px 70px;
+      }
+
+      .card {
+        width: 96vw;
+        padding: 25px 18px;
+      }
+
+      .cake {
+        font-size: 3.2rem;
+      }
+
+      .typedMessage {
+        font-size: .93rem;
+      }
+
+      .birthdayCake {
+        font-size: 4rem;
+      }
+
+      .teamsPopup {
+        padding: 15px;
+      }
+
+      .teamsButtons {
+        height: 200px;
+      }
+
+      button {
+        font-size: .82rem;
+        padding: 10px 14px;
+      }
+
+      .acceptBtn {
+        left: 10px;
+        bottom: 15px;
+      }
+
+      .declineBtn {
+        left: auto;
+        right: 10px;
+        top: auto;
+        bottom: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="card">
+
+  <div class="cake">🎂</div>
+
+  <h1>Happy Birthday,</h1>
+
+  <div class="name" id="personName">
+    Friend!
+  </div>
+  
+	<div style="font-size: 2rem; margin: -5px 0 12px; animation: pulseGlow 2s infinite alternate;">
+	❤️
+	</div>
+
+  <div
+    class="typedMessage cursor"
+    id="typedMessage">
+  </div>
+
+  <!-- WISH SECTION -->
+
+  <div id="wishSection" style="display:none;">
+
+    <div class="wishTitle">
+      ✨ Okay... now make a wish!
+    </div>
+
+    <div class="birthdayCake">
+
+      <div class="flames">
+        <span class="flame">🔥</span>
+        <span class="flame">🔥</span>
+        <span class="flame">🔥</span>
+      </div>
+
+      🎂
+
+    </div>
+
+    <br>
+
+    <button
+      class="primaryBtn"
+      id="blowButton"
+      onclick="blowCandles()">
+      💨 Blow the candles
+    </button>
+
+    <div id="wishResult"></div>
+
+  </div>
+
+
+  <!-- PARTY REQUEST -->
+
+  <div
+    class="teamsPopup"
+    id="teamsPopup"
+    style="display:none;">
+
+    <div class="teamsHeader">
+
+      <div class="teamsLogo">T</div>
+
+      Birthday Operations Team 😄
+
+    </div>
+
+    <div class="priority">
+      🚨 IMPORTANT NOTIFICATION
+    </div>
+
+    <div class="requestTitle">
+      🎂 Important Birthday Decision
+    </div>
+
+    <div class="teamsText">
+
+      Birthday detected successfully. 🎂
+
+      <br><br>
+
+      According to totally legitimate birthday policy,
+      the birthday person now owes Saurabh a party. 😌
+
+      <br><br>
+
+      <strong>Party Status:</strong> Pending
+
+      <br>
+
+      <strong>Deadline:</strong> ASAP
+
+      <br>
+
+      <strong>Escape Options:</strong> Apparently none 😂
+
+    </div>
+
+    <div
+      class="teamsButtons"
+      id="buttonPlayground">
+
+      <button
+        class="acceptBtn"
+        id="acceptButton"
+        onclick="acceptBirthday()">
+        ✅ Fine, I Accept, Party It Is! 🎉
+      </button>
+
+      <button
+        class="declineBtn"
+        id="declineButton"
+        type="button">
+        ❌ No Party
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- FINAL MESSAGE -->
+
+  <div
+    class="finalMessage"
+    id="finalMessage"
+    style="display:none;">
+
+    <h2>
+      🎉 Party Confirmed! 🎉
+    </h2>
+
+    <div class="partyConfirmed">
+      ✅ Excellent decision. 😂
+    </div>
+
+    <p>
+
+      I knew you would eventually make the right choice. 😌
+
+      <br><br>
+
+      I'll be waiting for my party! 🎂🎉
+
+      <br><br>
+
+      And jokes aside...
+
+      <br><br>
+
+      Wishing you lots of happiness,
+      success, good health and plenty
+      of reasons to celebrate throughout the year.
+
+      <br><br>
+
+      Have an absolutely amazing birthday! 🎂✨
+
+    </p>
+
+    <div class="signature">
+      - Saurabh 😊
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+  /* ===============================
+     NAME
+  =============================== */
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const personName =
+    params.get("name") || "Dear Friend";
+
+  document
+    .getElementById("personName")
+    .textContent =
+      personName + "!";
+
+
+  /* ===============================
+     CONFETTI
+  =============================== */
+
+  const canvas =
+    document.getElementById("confetti");
+
+  const ctx =
+    canvas.getContext("2d");
+
+  function resizeCanvas() {
+
+    canvas.width =
+      window.innerWidth;
+
+    canvas.height =
+      window.innerHeight;
+
+  }
+
+  resizeCanvas();
+
+  window.addEventListener(
+    "resize",
+    resizeCanvas
+  );
+
+  const colors = [
+    "#ff758c",
+    "#ffd166",
+    "#06d6a0",
+    "#118ab2",
+    "#c77dff",
+    "#ffffff"
+  ];
+
+  let particles = [];
+
+  function createConfetti(count) {
+
+    for (let i = 0; i < count; i++) {
+
+      particles.push({
+
+        x:
+          Math.random() *
+          canvas.width,
+
+        y:
+          -20 -
+          Math.random() *
+          canvas.height,
+
+        size:
+          Math.random() *
+          8 + 4,
+
+        color:
+          colors[
+            Math.floor(
+              Math.random() *
+              colors.length
+            )
+          ],
+
+        speedY:
+          Math.random() *
+          4 + 2,
+
+        speedX:
+          Math.random() *
+          4 - 2,
+
+        angle:
+          Math.random() * 360,
+
+        spin:
+          Math.random() *
+          8 - 4,
+
+        life:
+          Math.random() *
+          250 + 150
+
+      });
+
+    }
+
+  }
+
+  function animateConfetti() {
+
+    ctx.clearRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    for (
+      let i =
+        particles.length - 1;
+      i >= 0;
+      i--
+    ) {
+
+      const p =
+        particles[i];
+
+      p.y += p.speedY;
+      p.x += p.speedX;
+      p.angle += p.spin;
+      p.life--;
+
+      ctx.save();
+
+      ctx.translate(
+        p.x,
+        p.y
+      );
+
+      ctx.rotate(
+        p.angle *
+        Math.PI /
+        180
+      );
+
+      ctx.fillStyle =
+        p.color;
+
+      ctx.fillRect(
+        -p.size / 2,
+        -p.size / 2,
+        p.size,
+        p.size * .65
+      );
+
+      ctx.restore();
+
+      if (
+        p.y > canvas.height ||
+        p.life <= 0
+      ) {
+
+        particles.splice(
+          i,
+          1
+        );
+
+      }
+
+    }
+
+    requestAnimationFrame(
+      animateConfetti
+    );
+
+  }
+
+  animateConfetti();
+
+
+  /* ===============================
+     BALLOONS
+  =============================== */
+
+  function spawnBalloon() {
+
+    const balloon =
+      document.createElement("div");
+
+    balloon.className =
+      "balloon";
+
+    const emojis = [
+      "🎈",
+      "✨",
+      "🎊",
+      "🎉",
+      "💖",
+      "🥳"
+    ];
+
+    balloon.textContent =
+      emojis[
+        Math.floor(
+          Math.random() *
+          emojis.length
+        )
+      ];
+
+    balloon.style.left =
+      Math.random() *
+      95 + "vw";
+
+    balloon.style.animationDuration =
+      Math.random() *
+      4 + 5 + "s";
+
+    document.body.appendChild(
+      balloon
+    );
+
+    setTimeout(
+      () => balloon.remove(),
+      9500
+    );
+
+  }
+
+  function celebrationBurst(
+    balloons = 12
+  ) {
+
+    for (
+      let i = 0;
+      i < balloons;
+      i++
+    ) {
+
+      setTimeout(
+        spawnBalloon,
+        i * 100
+      );
+
+    }
+
+  }
+
+
+  /* ===============================
+     TYPING
+  =============================== */
+
+  const birthdayMessage =
+
+    "Hope your day comes with lots of cake, good vibes, fewer meetings, and absolutely zero urgent Teams pings. 😄";
+
+  let characterIndex = 0;
+
+  function startTyping() {
+
+    const element =
+      document.getElementById(
+        "typedMessage"
+      );
+
+    element.textContent = "";
+
+    characterIndex = 0;
+
+    function typeCharacter() {
+
+      if (
+        characterIndex <
+        birthdayMessage.length
+      ) {
+
+        element.textContent +=
+          birthdayMessage.charAt(
+            characterIndex
+          );
+
+        characterIndex++;
+
+        setTimeout(
+          typeCharacter,
+          38
+        );
+
+      }
+
+      else {
+
+        element
+          .classList
+          .remove("cursor");
+
+        setTimeout(
+          () => {
+
+            document
+              .getElementById(
+                "wishSection"
+              )
+              .style.display =
+                "block";
+
+          },
+          400
+        );
+
+      }
+
+    }
+
+    typeCharacter();
+
+  }
+
+
+  /* ===============================
+     BLOW CANDLES
+  =============================== */
+
+  function blowCandles() {
+
+    const flames =
+      document.querySelectorAll(
+        ".flame"
+      );
+
+    flames.forEach(
+      (flame, index) => {
+
+        setTimeout(
+          () => {
+
+            flame
+              .classList
+              .add("out");
+
+          },
+          index * 180
+        );
+
+      }
+    );
+
+    const button =
+      document.getElementById(
+        "blowButton"
+      );
+
+    button.disabled = true;
+
+    button.style.opacity = ".5";
+
+    setTimeout(
+      () => {
+
+        document
+          .getElementById(
+            "wishResult"
+          )
+          .innerHTML =
+            "✨ Wish submitted successfully! ✨";
+
+        createConfetti(300);
+
+        celebrationBurst(18);
+
+        setTimeout(
+          () => {
+
+            const popup =
+              document.getElementById(
+                "teamsPopup"
+              );
+
+            popup.style.display =
+              "block";
+
+            /*
+              Initialize the decline button only
+              AFTER the hidden popup becomes visible.
+              This prevents zero-width calculations.
+            */
+            setTimeout(
+              () => {
+
+                initializeDeclineButton();
+
+                popup.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center"
+                });
+
+              },
+              100
+            );
+
+          },
+          900
+        );
+
+      },
+      800
+    );
+
+  }
+
+
+  /* ==========================================
+     DECLINE BUTTON - FIXED VERSION
+  ========================================== */
+
+  let declineAttempts = 0;
+
+  let declineMoving = false;
+
+  const declineButton =
+    document.getElementById(
+      "declineButton"
+    );
+
+  const playground =
+    document.getElementById(
+      "buttonPlayground"
+    );
+
+  const acceptButton =
+    document.getElementById(
+      "acceptButton"
+    );
+
+  const declineMessages = [
+    "🤨 Are you sure?",
+    "👀 Think again...",
+    "😏 Wrong answer",
+    "⚠️ Final warning 😂",
+    "📸 Screenshot taken!",
+    "😂 Nice try!",
+    "🎉 JUST ACCEPT!"
+  ];
+
+
+  function initializeDeclineButton() {
+
+    /*
+      Do this after popup is visible so that
+      clientWidth/clientHeight are real values.
+    */
+
+    const padding = 10;
+
+    const x =
+      playground.clientWidth -
+      declineButton.offsetWidth -
+      padding;
+
+    const y =
+      playground.clientHeight -
+      declineButton.offsetHeight -
+      20;
+
+    declineButton.style.right =
+      "auto";
+
+    declineButton.style.bottom =
+      "auto";
+
+    declineButton.style.left =
+      Math.max(
+        padding,
+        x
+      ) + "px";
+
+    declineButton.style.top =
+      Math.max(
+        padding,
+        y
+      ) + "px";
+
+  }
+
+
+  function rectanglesOverlap(
+    x1,
+    y1,
+    w1,
+    h1,
+    x2,
+    y2,
+    w2,
+    h2
+  ) {
+
+    return !(
+      x1 + w1 + 10 < x2 ||
+      x1 > x2 + w2 + 10 ||
+      y1 + h1 + 10 < y2 ||
+      y1 > y2 + h2 + 10
+    );
+
+  }
+
+
+  function moveDecline() {
+
+    /*
+      Prevent repeated pointer events while
+      the button is currently moving.
+    */
+
+    if (declineMoving) {
+      return;
+    }
+
+    declineMoving = true;
+
+    declineAttempts++;
+
+
+    declineButton.textContent =
+      declineMessages[
+        Math.min(
+          declineAttempts - 1,
+          declineMessages.length - 1
+        )
+      ];
+
+
+    if (declineAttempts >= 4) {
+      declineButton.classList.add(
+        "danger"
+      );
+    }
+
+    if (
+      declineAttempts >=
+      declineMessages.length
+    ) {
+
+      declineButton.classList.remove(
+        "danger"
+      );
+
+      declineButton.classList.add(
+        "final"
+      );
+
+    }
+
+
+    /*
+      Wait until browser recalculates button
+      width after changing its text.
+    */
+
+    requestAnimationFrame(
+      () => {
+
+        const padding = 10;
+
+        const buttonWidth =
+          declineButton.offsetWidth;
+
+        const buttonHeight =
+          declineButton.offsetHeight;
+
+        const areaWidth =
+          playground.clientWidth;
+
+        const areaHeight =
+          playground.clientHeight;
+
+
+        /*
+          Accept button position relative
+          to the playground.
+        */
+
+        const acceptX =
+          acceptButton.offsetLeft;
+
+        const acceptY =
+          acceptButton.offsetTop;
+
+        const acceptWidth =
+          acceptButton.offsetWidth;
+
+        const acceptHeight =
+          acceptButton.offsetHeight;
+
+
+        const maxX =
+          Math.max(
+            padding,
+            areaWidth -
+            buttonWidth -
+            padding
+          );
+
+        const maxY =
+          Math.max(
+            padding,
+            areaHeight -
+            buttonHeight -
+            padding
+          );
+
+
+        let newX = padding;
+
+        let newY = padding;
+
+        let foundPosition = false;
+
+
+        /*
+          Try several random positions and
+          select one that doesn't overlap
+          Accept.
+        */
+
+        for (
+          let attempt = 0;
+          attempt < 30;
+          attempt++
+        ) {
+
+          const testX =
+            padding +
+            Math.random() *
+            Math.max(
+              0,
+              maxX - padding
+            );
+
+          const testY =
+            padding +
+            Math.random() *
+            Math.max(
+              0,
+              maxY - padding
+            );
+
+
+          const overlaps =
+            rectanglesOverlap(
+
+              testX,
+              testY,
+              buttonWidth,
+              buttonHeight,
+
+              acceptX,
+              acceptY,
+              acceptWidth,
+              acceptHeight
+
+            );
+
+
+          if (!overlaps) {
+
+            newX = testX;
+
+            newY = testY;
+
+            foundPosition = true;
+
+            break;
+
+          }
+
+        }
+
+
+        /*
+          Guaranteed safe fallback.
+          Top-left area is away from Accept,
+          which sits at the bottom.
+        */
+
+        if (!foundPosition) {
+
+          newX =
+            padding;
+
+          newY =
+            padding;
+
+        }
+
+
+        /*
+          Clamp again for absolute safety.
+        */
+
+        newX =
+          Math.max(
+            padding,
+            Math.min(
+              newX,
+              maxX
+            )
+          );
+
+        newY =
+          Math.max(
+            padding,
+            Math.min(
+              newY,
+              maxY
+            )
+          );
+
+
+        declineButton.style.left =
+          newX + "px";
+
+        declineButton.style.top =
+          newY + "px";
+
+
+        /*
+          Unlock shortly after movement.
+          This avoids an endless pointerenter
+          loop while the button moves away.
+        */
+
+        setTimeout(
+          () => {
+
+            declineMoving = false;
+
+          },
+          220
+        );
+
+      }
+    );
+
+  }
+
+
+  /*
+    Desktop:
+    pointerenter behaves more reliably here
+    than inline mouseover/mouseenter handlers.
+  */
+
+  declineButton.addEventListener(
+    "pointerenter",
+    (event) => {
+
+      /*
+        Only use hover escape for a mouse/pen.
+        Touch is handled separately.
+      */
+
+      if (
+        event.pointerType === "mouse" ||
+        event.pointerType === "pen"
+      ) {
+
+        moveDecline();
+
+      }
+
+    }
+  );
+
+
+  /*
+    Mobile:
+    first touch makes it escape instead
+    of accidentally activating it.
+  */
+
+  declineButton.addEventListener(
+    "touchstart",
+    (event) => {
+
+      event.preventDefault();
+
+      moveDecline();
+
+    },
+    {
+      passive: false
+    }
+  );
+
+
+  /*
+    If someone somehow clicks before it
+    moves, it still escapes.
+  */
+
+  declineButton.addEventListener(
+    "click",
+    (event) => {
+
+      event.preventDefault();
+
+      moveDecline();
+
+    }
+  );
+
+
+  /* ===============================
+     ACCEPT PARTY
+  =============================== */
+
+  function acceptBirthday() {
+
+    declineButton.style.display =
+      "none";
+
+    document
+      .getElementById(
+        "teamsPopup"
+      )
+      .style.display =
+        "none";
+
+    const finalMessage =
+      document.getElementById(
+        "finalMessage"
+      );
+
+    finalMessage.style.display =
+      "block";
+
+    setTimeout(
+      () => {
+
+        finalMessage.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+      },
+      150
+    );
+
+    createConfetti(500);
+
+    celebrationBurst(30);
+
+    setTimeout(
+      () => createConfetti(180),
+      700
+    );
+
+    setTimeout(
+      () => createConfetti(180),
+      1400
+    );
+
+    setTimeout(
+      () => celebrationBurst(15),
+      1800
+    );
+
+  }
+
+
+  /* ===============================
+     START
+  =============================== */
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      createConfetti(180);
+
+      celebrationBurst(10);
+
+      setTimeout(
+        startTyping,
+        600
+      );
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
